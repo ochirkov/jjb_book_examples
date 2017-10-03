@@ -1,0 +1,83 @@
+- job:
+    name: Jenkins_Job_Builder_Unit_Tests
+    project-type: freestyle
+    description: Simply run unit tests for jenkins job builder project
+    disabled: false
+    node: master
+    concurrent: true
+
+    properties:
+      - build-discarder:
+          num-to-keep: 10
+
+    wrappers:
+      - workspace-cleanup:
+          include:
+            - "*"
+      - timestamps
+      - build-user-vars
+      - ansicolor:
+          colormap: xterm
+
+
+    parameters:
+      - choice:
+          name: TEST_TYPE
+          choices:
+            - py27
+            - py34
+            - py35
+            - cover
+            - pep8
+          default: py27
+
+    scm:
+      - git:
+          url: https://github.com/jjb-book/jenkins-job-builder.git
+          branches:
+            - master
+          basedir: "./jjb-repo"
+          git-config-name: jjb-book
+          git-config-email: jjb-book@example.com
+
+    builders:
+
+      - shell: echo -e "$TEST_TYPE test was caused by $BUILD_USER_ID user\n"
+      - shell: |
+          if [ $TEST_TYPE == "py27" ]; then
+            echo -e "Running py27 test rule\n"
+            cd jjb-repo && tox -e py27
+          fi
+      - shell: |
+          if [ $TEST_TYPE == "py34" ]; then
+            echo -e "Running py34 test rule\n"
+            cd jjb-repo && tox -e py34
+          fi
+      - shell: |
+          if [ $TEST_TYPE == "py35" ]; then
+            echo -e "Running py35 test rule\n"
+            cd jjb-repo && tox -e py35
+          fi
+      - shell: |
+          if [ $TEST_TYPE == "pep8" ]; then
+            echo -e "Running linter test rule\n"
+            cd jjb-repo && tox -e pep8
+          fi
+
+    publishers:
+      - slack:
+          room: "<your_room_name>"
+          team-domain: oceanio
+          auth-token: "<jenkins_public_uri>"
+          notify-start: False
+          notify-success: False
+          notify-aborted: False
+          notify-not-built: False
+          notify-unstable: False
+          notify-failure: True
+          notify-back-to-normal: False
+          notify-repeated-failure: True
+          include-test-summary: False
+          commit-info-choice: "NONE"
+          include-custom-message: True
+          custom-message: "$TEST_TYPE tests build triggered by $BUILD_USER_ID"
