@@ -1,0 +1,17 @@
+- defaults:
+    name: global
+    ver: 'py27'
+
+- project:
+    name: Jenkins_Job_Builder_Unit_Tests
+    jobs:
+        - 'Jenkins_Job_Builder_Unit_Tests_Python_{ver}'
+        - 'Jenkins_Job_Builder_Unit_Tests_Python_{ver}':
+            ver: 'py34'
+        - 'Jenkins_Job_Builder_Unit_Tests_Python_{ver}':
+            ver: 'py35'
+
+- job-template:
+    name: 'Jenkins_Job_Builder_Unit_Tests_Python_{ver}'
+    builders:
+        - shell: "echo Build arch {ver}."

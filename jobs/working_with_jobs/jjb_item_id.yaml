@@ -1,0 +1,25 @@
+- project:
+    name: Jenkins_Job_Builder_Tests
+    jobs:
+        - 'simple-template':
+            command: tox -e py27
+            type: Unit
+        - 'not-as-simple-template':
+            command: tox -e cover
+            type: Coverage
+
+- job-template:
+    name: "Jenkins_Job_Builder_{type}"
+    id: simple-template
+    builders:
+      - shell: |
+         echo "Template name: {template-name}"
+      - shell: "{command}"
+
+- job-template:
+    name: 'Jenkins_Job_Builder_{type}'
+    id: not-as-simple-template
+    builders:
+      - shell: |
+         echo "Template name: {template-name}"
+      - shell: "{command}"

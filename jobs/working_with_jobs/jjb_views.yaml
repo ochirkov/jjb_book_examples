@@ -1,0 +1,11 @@
+- view:
+    name: JJB_View
+    view-type: list
+    job-name:
+      - Jenkins_Job_Builder_Docs_Tests
+      - Jenkins_Job_Builder_Unit_Tests
+    columns:
+      - status
+      - weather
+      - job
+      - build-button

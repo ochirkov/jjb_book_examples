@@ -1,0 +1,44 @@
+- job-template:
+    name: '{name}_Unit_Tests'
+    scm:
+      - git:
+          url: https://github.com/openstack-infra/jenkins-job-builder.git
+          branches:
+            - master
+          git-config-name: jjb-book
+          git-config-email: jjb-book@example.com
+          basedir: "./jjb-repo"
+    builders:
+    - shell: tox -e py27
+    publishers:
+    - email:
+        recipients: '{mail-to}'
+
+- job-template:
+    name: '{name}_Docs_Tests'
+    scm:
+      - git:
+          url: https://github.com/openstack-infra/jenkins-job-builder.git
+          branches:
+            - master
+          git-config-name: jjb-book
+          git-config-email: jjb-book@example.com
+          basedir: "./jjb-repo"
+    builders:
+    - shell: tox -e docs && tox -e docs-linkcheck
+    publishers:
+    - email:
+        recipients: '{mail-to}'
+
+- job-group:
+    name: '{name}_Tests'
+    jobs:
+    - '{name}_Unit_Tests':
+        mail-to: developer@nowhere.net
+    - '{name}_Docs_Tests':
+        mail-to: projmanager@nowhere.net
+
+- project:
+    name: Jenkins_Job_Builder
+    jobs:
+    - '{name}_Tests'

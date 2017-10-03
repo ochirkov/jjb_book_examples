@@ -1,0 +1,30 @@
+- job:
+    name: Jenkins_Job_Builder_Unit_Tests
+    project-type: freestyle
+    description: Simply run unit tests for jenkins job builder project
+    disabled: false
+    node: master
+
+    properties:
+      - build-discarder:
+          num-to-keep: 10
+
+    wrappers:
+      - workspace-cleanup:
+          include:
+            - "*"
+      - timestamps
+
+    scm:
+      - git:
+          url: https://github.com/jjb-book/jenkins-job-builder.git
+          branches:
+            - master
+          basedir: "./jjb-repo"
+          git-config-name: jjb-book
+          git-config-email: jjb-book@example.com
+
+    builders:
+      - shell: |
+          cd jjb-repo
+          tox -e py27
