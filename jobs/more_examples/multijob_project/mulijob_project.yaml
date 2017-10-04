@@ -1,0 +1,39 @@
+- job:
+    name: Jenkins_Job_Builder_Jobs
+    project-type: multijob
+    description: Simply run unit tests/docs phases
+    disabled: false
+    node: master
+    concurrent: true
+
+    builders:
+      - multijob:
+          name: TestsPhase
+          condition: SUCCESSFUL
+          projects:
+            - name: Jenkins_Job_Builder_Unit_Tests_Py27
+            - name: Jenkins_Job_Builder_Unit_Tests_Py34
+            - name: Jenkins_Job_Builder_Unit_Tests_Py35
+      - multijob:
+          name: DocsPhase
+          condition: SUCCESSFUL
+          projects:
+            - name: Jenkins_Job_Builder_Docs_Creation
+            - name: Jenkins_Job_Builder_Docs_Check
+
+    publishers:
+      - slack:
+          room: "<your_room_name>"
+          team-domain: "<your_team_domain>"
+          auth-token: "<jenkins_public_uri>"
+          notify-start: False
+          notify-success: False
+          notify-aborted: False
+          notify-not-built: False
+          notify-unstable: False
+          notify-failure: True
+          notify-back-to-normal: False
+          notify-repeated-failure: True
+          include-test-summary: False
+          commit-info-choice: "NONE"
+          include-custom-message: True
