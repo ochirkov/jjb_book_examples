@@ -1,0 +1,56 @@
+- job:
+    name: Jenkins_Job_Builder_Unit_Tests_Flow
+    project-type: pipeline
+    description: Simply run unit tests for jenkins job builder project
+    disabled: false
+    node: master
+    concurrent: true
+
+    parameters:
+      - choice:
+          name: ACTION
+          choices:
+            - tests
+            - docs
+
+    dsl: |
+      if (ACTION == "tests") {
+          parallel_jobs = [:]
+
+          parallel_jobs["1"] = {
+              build job: "Jenkins_Job_Builder_Unit_Tests_Py27"
+          }
+          parallel_jobs["2"] = {
+              build job: "Jenkins_Job_Builder_Unit_Tests_Py34"
+          }
+          parallel_jobs["3"] = {
+              build job: "Jenkins_Job_Builder_Unit_Tests_Py35"
+          }
+          parallel_jobs["4"] = {
+              build job: "Jenkins_Job_Builder_Tests_Pep8"
+          }
+          parallel_jobs["5"] = {
+              build job: "Jenkins_Job_Builder_Tests_Coverage"
+          }
+          parallel parallel_jobs
+      } else if (ACTION == "docs") {
+          build job: "Jenkins_Job_Builder_Docs_Creation"
+          build job: "Jenkins_Job_Builder_Docs_Check"
+      }
+
+    publishers:
+      - slack:
+          room: "<your_room_name>"
+          team-domain: "<your_team_domain>"
+          auth-token: "<jenkins_public_uri>"
+          notify-start: False
+          notify-success: False
+          notify-aborted: False
+          notify-not-built: False
+          notify-unstable: False
+          notify-failure: True
+          notify-back-to-normal: False
+          notify-repeated-failure: True
+          include-test-summary: False
+          commit-info-choice: "NONE"
+          include-custom-message: True

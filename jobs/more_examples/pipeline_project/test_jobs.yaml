@@ -1,0 +1,78 @@
+- project:
+    name: Jenkins_Job_Builder_Jobs
+    jobs:
+        - 'Jenkins_Job_Builder_{action_type}':
+            action_type: Unit_Tests_Py27
+            command: tox -e py27
+        - 'Jenkins_Job_Builder_{action_type}':
+            action_type: Unit_Tests_Py34
+            command: tox -e py34
+        - 'Jenkins_Job_Builder_{action_type}':
+            action_type: Unit_Tests_Py35
+            command: tox -e py35
+        - 'Jenkins_Job_Builder_{action_type}':
+            action_type: Tests_Coverage
+            command: tox -e cover
+        - 'Jenkins_Job_Builder_{action_type}':
+            action_type: Tests_Pep8
+            command: tox -e cover
+        - 'Jenkins_Job_Builder_{action_type}':
+            action_type: Docs_Creation
+            command: tox -e docs
+        - 'Jenkins_Job_Builder_{action_type}':
+            action_type: Docs_Check
+            command: tox -e docs-linkcheck
+
+- job-template:
+
+    # template settings
+    name: 'Jenkins_Job_Builder_{action_type}'
+
+    project-type: freestyle
+    description: Simply run tests for jenkins job builder project
+    disabled: false
+    node: master
+
+    properties:
+      - build-discarder:
+          num-to-keep: 10
+
+    wrappers:
+      - workspace-cleanup:
+          include:
+            - "*"
+      - timestamps
+      - build-user-vars
+      - ansicolor:
+          colormap: xterm
+
+    scm:
+      - git:
+          url: https://github.com/openstack-infra/jenkins-job-builder.git
+          branches:
+            - master
+          git-config-name: jjb-book
+          git-config-email: jjb-book@example.com
+          basedir: "./jjb-repo"
+
+    builders:
+      - shell: |
+          cd jjb-repo
+          {command}
+
+    publishers:
+      - slack:
+          room: "<your_room_name>"
+          team-domain: "<your_team_domain>"
+          auth-token: "<jenkins_public_uri>"
+          notify-start: False
+          notify-success: False
+          notify-aborted: False
+          notify-not-built: False
+          notify-unstable: False
+          notify-failure: True
+          notify-back-to-normal: False
+          notify-repeated-failure: True
+          include-test-summary: False
+          commit-info-choice: "NONE"
+          include-custom-message: True

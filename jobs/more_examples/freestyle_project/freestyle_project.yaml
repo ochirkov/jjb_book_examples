@@ -67,7 +67,7 @@
     publishers:
       - slack:
           room: "<your_room_name>"
-          team-domain: oceanio
+          team-domain: "<your_team_domain>"
           auth-token: "<jenkins_public_uri>"
           notify-start: False
           notify-success: False
