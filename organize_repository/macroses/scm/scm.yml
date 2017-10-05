@@ -12,7 +12,6 @@
     name: ansible_scm
     scm:
       - git:
-      - git:
           url: https://github.com/ansible/ansible.git
           branches:
             - master
