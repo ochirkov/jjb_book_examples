@@ -1,0 +1,8 @@
+- parameter:
+    name: unit_tests_param
+    parameters:
+      - choice:
+          name: ACTION
+          choices:
+            - py27
+            - py35

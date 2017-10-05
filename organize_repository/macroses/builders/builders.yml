@@ -1,0 +1,5 @@
+- builder:
+    name: unit_tests_builder
+    builders:
+      - shell:
+          !include-raw: ../../scripts/unit_tests_build_step.sh

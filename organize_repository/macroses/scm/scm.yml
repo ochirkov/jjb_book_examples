@@ -1,0 +1,20 @@
+- scm:
+    name: jjb_scm
+    scm:
+      - git:
+          url: https://github.com/jjb-book/jenkins-job-builder.git
+          branches:
+            - master
+          git-config-name: jjb-book
+          git-config-email: jjb-book@example.com
+
+- scm:
+    name: ansible_scm
+    scm:
+      - git:
+      - git:
+          url: https://github.com/ansible/ansible.git
+          branches:
+            - master
+          git-config-name: jjb-book
+          git-config-email: jjb-book@example.com

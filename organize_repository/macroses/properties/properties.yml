@@ -1,0 +1,5 @@
+- property:
+    name: bunit_test_property
+    properties:
+      - build-discarder:
+          num-to-keep: "10"

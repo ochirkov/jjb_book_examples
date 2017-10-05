@@ -1,0 +1,26 @@
+- job:
+    name: JJB_Unit_Tests
+    project-type: freestyle
+    description:
+        !include-raw: ../../descriptions/Unit_Tests_Description.html
+    disabled: false
+    node: master
+
+    properties:
+      - bunit_test_property
+
+    parameters:
+      - unit_tests_param
+
+    wrappers:
+      - unit_tests_wrappers
+
+    scm:
+      - jjb_scm
+
+    builders:
+      - unit_tests_builder
+
+    publishers:
+      - slack_publisher
+

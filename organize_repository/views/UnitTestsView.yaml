@@ -1,0 +1,11 @@
+- view:
+    name: UnitTestsView
+    view-type: list
+    job-name:
+      - Ansible_Unit_Tests
+      - JJB_Unit_Tests
+    columns:
+      - status
+      - weather
+      - job
+      - build-button

@@ -1,0 +1,10 @@
+- wrapper:
+    name: unit_tests_wrappers
+    wrappers:
+      - build-user-vars
+      - ansicolor:
+          colormap: xterm
+      - timestamps
+      - workspace-cleanup:
+          include:
+            - "*"
