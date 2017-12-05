@@ -9,37 +9,35 @@ timestamps {
                     git url: 'https://github.com/openstack-infra/jenkins-job-builder.git'
                 }
 
-                parallel(
-                stage 'Python 2.7 Unit Tests'
 
-                println 'Run python 2.7 tests'
-
-                dir("${DIR}") {
-                    sh("${CMD} py27")
-                }
-
-                stage 'Python 3.4 Unit Tests'
-
-                println 'Run python 3.4 tests'
-
-                dir("${DIR}") {
-                    sh("${CMD} py34")
-                }
-
-                stage 'Python 3.5 Unit Tests'
-
-                println 'Run python 3.5 tests'
-
-                dir("${DIR}") {
-                    sh("${CMD} py35")
-                }
-)
-                stage 'Docs syntax check'
-
-                println 'Run python linter'
-
-                dir("${DIR}") {
-                    sh("${CMD} docs-linkcheck")
+                parallel '27': {
+                    stage('Python 2.7 Unit Tests') {
+                        println 'Run python 2.7 tests'
+                        dir("${DIR}") {
+                            sh("${CMD} py27")
+                        }
+                    }
+                }, '34': {
+                    stage('Python 3.4 Unit Tests') {
+                        println 'Run python 3.4 tests'
+                        dir("${DIR}") {
+                            sh("${CMD} py34")
+                        }
+                    }
+                }, '35': {
+                    stage('Python 3.5 Unit Tests') {
+                        println 'Run python 3.5 tests'
+                        dir("${DIR}") {
+                            sh("${CMD} py35")
+                        }
+                    }
+                }, 'docs': {
+                    stage ('Docs syntax check') {
+                        println 'Run python linter'
+                        dir("${DIR}") {
+                            sh("${CMD} docs-linkcheck")
+                        }
+                    }
                 }
 
                 stage 'Generating docs'
