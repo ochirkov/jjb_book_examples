@@ -5,6 +5,7 @@ timestamps {
             try {
 
                 withEnv(["DIR=jjb-repo", "CMD=tox -e"]) {
+
                     stage 'Checkout Jenkins Job Builder Repo'
 
                     dir("${DIR}") {
