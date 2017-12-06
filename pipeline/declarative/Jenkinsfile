@@ -41,7 +41,6 @@ pipeline {
 
         stage('Parallel Stage') {
 
-            failFast true
             parallel {
 
                 stage ('Python 2.7 Unit Tests') {
