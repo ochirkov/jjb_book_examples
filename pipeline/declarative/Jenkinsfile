@@ -19,14 +19,6 @@ pipeline {
 
     }
 
-    parameters {
-        booleanParam(
-            name: 'PUBLISH_DOCS',
-            defaultValue: true,
-            description: ''
-        )
-    }
-
     stages {
 
         stage ('Checkout Jenkins Job Builder Repo') {
