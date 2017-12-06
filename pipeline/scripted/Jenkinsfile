@@ -79,6 +79,7 @@ timestamps {
 
             finally {
                 deleteDir()
+                slackSend channel: '#ops-channel', color: '#f44336', message: 'Pipeline failed', teamDomain: '<domain>', token: '<token>'
             }
         }
     }
