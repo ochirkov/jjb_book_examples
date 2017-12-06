@@ -2,207 +2,82 @@ timestamps {
     node ('master') {
         ws('/tmp/Test_Pipeline/') {
 
-            withEnv(["DIR=jjb-repo", "CMD=tox -e"]) {
-                stage 'Checkout Jenkins Job Builder Repo'
+            try {
 
-                dir("${DIR}") {
-                    git url: 'https://github.com/openstack-infra/jenkins-job-builder.git'
+                withEnv(["DIR=jjb-repo", "CMD=tox -e"]) {
+                    stage 'Checkout Jenkins Job Builder Repo'
+
+                    dir("${DIR}") {
+                        git url: 'https://github.com/openstack-infra/jenkins-job-builder.git'
+                    }
+
+
+                    parallel '27': {
+                        stage('Python 2.7 Unit Tests') {
+                            println 'Run python 2.7 tests'
+                            dir("${DIR}") {
+                                sh("${CMD} py27")
+                            }
+                        }
+                    }, '34': {
+                        stage('Python 3.4 Unit Tests') {
+                            println 'Run python 3.4 tests'
+                            dir("${DIR}") {
+                                sh("${CMD} py34")
+                            }
+                        }
+                    }, '35': {
+                        stage('Python 3.5 Unit Tests') {
+                            println 'Run python 3.5 tests'
+                            dir("${DIR}") {
+                                sh("${CMD} py35")
+                            }
+                        }
+                    }, 'docs': {
+                        stage ('Docs syntax check') {
+                            println 'Run python linter'
+                            dir("${DIR}") {
+                                sh("${CMD} docs-linkcheck")
+                            }
+                        }
+                    }
+
+                    stage 'Generating docs'
+
+                    println 'Starting generate docs'
+
+                    dir("${DIR}") {
+                        sh("${CMD} docs")
+                        archive 'doc/build/html/index.html'
+                    }
+
+                    stage 'Sanity check'
+
+                    if (env.PUBLISH_DOCS == 'true') {
+                        input "Proceeding with deployment?"
+
+                    }
+
+                    stage 'Deploy'
+
+                    if (env.PUBLISH_DOCS == 'true') {
+                        dir("${DIR}") {
+                            echo 'Deploying documentation artifact'
+                            sh("cp doc/build/html/index.html /usr/share/nginx/html/")
+                        }
+                    }
+
+                    echo 'One way or another, I have finished'
                 }
-
-
-                parallel '27': {
-                    stage('Python 2.7 Unit Tests') {
-                        println 'Run python 2.7 tests'
-                        dir("${DIR}") {
-                            sh("${CMD} py27")
-                        }
-                    }
-                }, '34': {
-                    stage('Python 3.4 Unit Tests') {
-                        println 'Run python 3.4 tests'
-                        dir("${DIR}") {
-                            sh("${CMD} py34")
-                        }
-                    }
-                }, '35': {
-                    stage('Python 3.5 Unit Tests') {
-                        println 'Run python 3.5 tests'
-                        dir("${DIR}") {
-                            sh("${CMD} py35")
-                        }
-                    }
-                }, 'docs': {
-                    stage ('Docs syntax check') {
-                        println 'Run python linter'
-                        dir("${DIR}") {
-                            sh("${CMD} docs-linkcheck")
-                        }
-                    }
-                }
-
-                stage 'Generating docs'
-
-                println 'Starting generate docs'
-
-                dir("${DIR}") {
-                    sh("${CMD} docs")
-                    archive 'doc/build/html/index.html'
-                }
-
-
-
             }
-        }
-    }
-}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+            catch (exc) {
+                echo 'I failed :('
+                throw exc
             }
 
-        }
-
-    }
-}
-
-
-        try {
-            // run tests in the same workspace that the project was built
-            sh 'mvn test'
-        } catch (e) {
-            // if any exception occurs, mark the build as failed
-            currentBuild.result = 'FAILURE'
-            throw e
-        } finally {
-            // perform workspace cleanup only if the build have passed
-            // if the build has failed, the workspace will be kept
-            cleanWs cleanWhenFailure: false
-        }
-
-
-
-===== parallel =====
-def branches = [:]
-
-//running the job 4 times concurrently
-//the dummy parameter is for preventing mutation of the parameter before the execution of the closure.
-//we have to assign it outside the closure or it will run the job multiple times with the same parameter "4"
-//and jenkins will unite them into a single run of the job
-
-for (int i = 0; i < 4; i++) {
-  def index = i //if we tried to use i below, it would equal 4 in each job execution.
-  branches["branch${i}"] = {
-//Parameters:
-//param1 : an example string parameter for the triggered job.
-//dummy: a parameter used to prevent triggering the job with the same parameters value.
-//       this parameter has to accept a different value each time the job is triggered.
-    build job: 'freestyle', parameters: [
-      string(name: 'param1', value:'test_param'),
-      string(name:'dummy', value: "${index}")]
-  }
-}
-parallel branches
-
-
-withEnv(["JAVA_HOME=${ tool 'jdk-1.8.0_64bits' }", "PATH+MAVEN=${tool 'maven-3.2.1'}/bin:${env.JAVA_HOME}/bin"]) {
-
-    // Apache Maven related side notes:
-    // --batch-mode : recommended in CI to inform maven to not run in interactive mode (less logs)
-    // -V : strongly recommended in CI, will display the JDK and Maven versions in use.
-    //      Very useful to be quickly sure the selected versions were the ones you think.
-    // -U : force maven to update snapshots each time (default : once an hour, makes no sense in CI).
-    // -Dsurefire.useFile=false : useful in CI. Displays test errors in the logs directly (instead of
-    //                            having to crawl the workspace files to see the cause).
-    sh "mvn --batch-mode -V -U -e clean deploy -Dsurefire.useFile=false"
-
-}
-
-==== parallel 2 =====
-
-def branches = [:]
-def names = nodeNames()
-for (int i=0; i<names.size(); ++i) {
-  def nodeName = names[i];
-  // Into each branch we put the pipeline code we want to execute
-  branches["node_" + nodeName] = {
-    node(nodeName) {
-      echo "Triggering on " + nodeName
-      build job: 'PayloadJob', parameters: [
-              new org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterValue
-                  ("TARGET_NODE", "description", nodeName)
-          ]
-    }
-  }
-}
-
-// Now we trigger all branches
-parallel branches
-
-
-===== slack ====
-
-import groovy.json.JsonOutput
-// Add whichever params you think you'd most want to have
-// replace the slackURL below with the hook url provided by
-// slack when you configure the webhook
-def notifySlack(text, channel) {
-    def slackURL = 'https://hooks.slack.com/services/xxxxxxx/yyyyyyyy/zzzzzzzzzz'
-    def payload = JsonOutput.toJson([text      : text,
-                                     channel   : channel,
-                                     username  : "jenkins",
-                                     icon_emoji: ":jenkins:"])
-    sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slackURL}"
-}
-
-
-    properties([
-        [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '10']]
-    ]);
-
-
-            ansiColor('xterm') {
-        stage "\u001B[31mI'm Red\u001B[0m Now not"
-        }
-
-
-
-timestamps {
-    node ('master') {
-        ws('/tmp/Test_Pipeline/') {
-
-            withEnv(["DIR=jjb-repo", "CMD=tox -e"]) {
-
-                parallel (
-                    "b1" :{
-                        stage 'Python 2.7 Unit Tests'
-
-                        println 'Run python 2.7 tests'
-
-                        dir("${DIR}") {
-                            sh("${CMD} py27")
-                        }
-                    },
-                    "b2": {
-                        stage 'Python 3.4 Unit Tests'
-
-                        println 'Run python 3.4 tests'
-
-                        dir("${DIR}") {
-                            sh("${CMD} py34")
-                        }
-                    }
-                )
+            finally {
+                deleteDir()
             }
         }
     }
