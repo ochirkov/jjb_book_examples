@@ -5,8 +5,6 @@
           url: https://github.com/openstack-infra/jenkins-job-builder.git
           branches:
             - master
-          git-config-name: jjb-book
-          git-config-email: jjb-book@example.com
           basedir: "./jjb-repo"
     builders:
     - shell: tox -e py27
@@ -21,8 +19,6 @@
           url: https://github.com/openstack-infra/jenkins-job-builder.git
           branches:
             - master
-          git-config-name: jjb-book
-          git-config-email: jjb-book@example.com
           basedir: "./jjb-repo"
     builders:
     - shell: tox -e docs && tox -e docs-linkcheck
