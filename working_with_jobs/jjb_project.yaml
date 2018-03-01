@@ -1,5 +1,5 @@
 - project:
-    name: Jenkins_Job_Builder_Jobs
+    name: Jenkins_Job_Builder_Project
     jobs:
         - 'Jenkins_Job_Builder_{action_type}':
             action_type: Unit_Tests
@@ -14,7 +14,6 @@
 
 - job-template:
 
-    # template settings
     name: 'Jenkins_Job_Builder_{action_type}'
 
     project-type: freestyle
