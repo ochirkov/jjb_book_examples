@@ -7,7 +7,7 @@
             - master
           basedir: "./jjb-repo"
     builders:
-    - shell: tox -e py27
+    - shell:  cd jjb-repo && tox -e py27
     publishers:
     - email:
         recipients: '{mail-to}'
@@ -21,7 +21,7 @@
             - master
           basedir: "./jjb-repo"
     builders:
-    - shell: tox -e docs && tox -e docs-linkcheck
+    - shell: cd jjb-repo && tox -e docs && tox -e docs-linkcheck
     publishers:
     - email:
         recipients: '{mail-to}'
