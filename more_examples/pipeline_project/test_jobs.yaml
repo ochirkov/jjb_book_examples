@@ -56,20 +56,3 @@
       - shell: |
           cd jjb-repo
           {command}
-
-    publishers:
-      - slack:
-          room: "<your_room_name>"
-          team-domain: "<your_team_domain>"
-          auth-token: "<jenkins_public_uri>"
-          notify-start: False
-          notify-success: False
-          notify-aborted: False
-          notify-not-built: False
-          notify-unstable: False
-          notify-failure: True
-          notify-back-to-normal: False
-          notify-repeated-failure: True
-          include-test-summary: False
-          commit-info-choice: "NONE"
-          include-custom-message: True
