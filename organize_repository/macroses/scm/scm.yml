@@ -5,8 +5,7 @@
           url: https://github.com/jjb-book/jenkins-job-builder.git
           branches:
             - master
-          git-config-name: jjb-book
-          git-config-email: jjb-book@example.com
+          basedir: "./jjb-repo"
 
 - scm:
     name: ansible_scm
@@ -15,5 +14,4 @@
           url: https://github.com/ansible/ansible.git
           branches:
             - devel
-          git-config-name: jjb-book
-          git-config-email: jjb-book@example.com
+          basedir: "./ansible-repo"

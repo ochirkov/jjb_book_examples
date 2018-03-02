@@ -37,8 +37,6 @@
           branches:
             - master
           basedir: "./jjb-repo"
-          git-config-name: jjb-book
-          git-config-email: jjb-book@example.com
 
     builders:
 

@@ -36,8 +36,6 @@
           url: https://github.com/openstack-infra/jenkins-job-builder.git
           branches:
             - master
-          git-config-name: jjb-book
-          git-config-email: jjb-book@example.com
           basedir: "./jjb-repo"
 
     builders:
