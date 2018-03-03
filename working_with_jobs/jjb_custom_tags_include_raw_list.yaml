@@ -7,5 +7,5 @@
     builders:
       - shell:
           !include-raw:
-              - !include-raw: unit_tests_build_step1.sh
-              - !include-raw: unit_tests_build_step2.sh
+              - !include-raw: scripts/include-raw/unit_tests_build_step1.sh
+              - !include-raw: scripts/include-raw/unit_tests_build_step2.sh

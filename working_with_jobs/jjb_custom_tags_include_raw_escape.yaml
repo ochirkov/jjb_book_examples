@@ -6,9 +6,9 @@
 
     builders:
       - shell:
-          !include-raw-escape: unit_tests_build_step1.sh
+          !include-raw-escape: scripts/include-raw/unit_tests_build_step1.sh
       - shell:
-          !include-raw-escape: unit_tests_build_step2.sh
+          !include-raw-escape: scripts/include-raw/unit_tests_build_step2.sh
 
 - project:
     name: JJB_Unit_Tests_1

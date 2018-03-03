@@ -7,8 +7,8 @@
     builders:
       - shell:
           !include-raw-escape:
-              - unit_tests_build_step1.sh
-              - unit_tests_build_step2.sh
+              - scripts/include-raw/unit_tests_build_step1.sh
+              - scripts/include-raw/unit_tests_build_step2.sh
 
 - project:
     name: JJB_Unit_Tests_1
