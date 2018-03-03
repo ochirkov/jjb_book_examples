@@ -1,4 +1,4 @@
-- template-job:
+- job-template:
     name: JJB_Unit_Tests_{num}
 
     properties:
