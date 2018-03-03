@@ -1,0 +1,10 @@
+- defaults:
+    name: team1
+    folder: JenkinsJobBuilder
+
+- job:
+    name: tests/pep8
+    defaults: team1
+    builders:
+      - shell: |
+          tox -e pep8

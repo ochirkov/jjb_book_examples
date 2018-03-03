@@ -1,0 +1,5 @@
+- job:
+    name: JenkinsJobBuilder/tox-py27
+    builders:
+      - shell: |
+          tox -e py27
