@@ -1,0 +1,6 @@
+- job:
+    name: JJB_Unit_Tests
+
+    builders:
+      - shell:
+          !include-raw: scripts/include-raw/unit_tests_build_step1.sh

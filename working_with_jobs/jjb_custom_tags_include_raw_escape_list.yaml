@@ -1,0 +1,17 @@
+- template-job:
+    name: JJB_Unit_Tests_{num}
+
+    properties:
+      !include: properties_jjb.yaml.inc
+
+    builders:
+      - shell:
+          !include-raw-escape:
+              - unit_tests_build_step1.sh
+              - unit_tests_build_step2.sh
+
+- project:
+    name: JJB_Unit_Tests_1
+    num: 1
+    jobs:
+      - 'JJB_Unit_Tests_{num}'

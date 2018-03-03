@@ -1,0 +1,9 @@
+- builder:
+    name: make-test
+    builders:
+      - shell: 'make test'
+
+- job:
+    name: JJB_Unit_Tests
+    builders:
+      - make-test

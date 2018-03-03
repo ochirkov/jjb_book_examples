@@ -1,0 +1,5 @@
+- job:
+    name: JJB_Unit_Tests
+
+    properties:
+      !include: properties_jjb.yaml.inc

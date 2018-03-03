@@ -1,0 +1,17 @@
+- builder:
+    name: test-builder
+
+    builders:
+        - shell:
+            !include-jinja2: jinja01.yaml.inc
+
+- job:
+    name: JJB_Unit_Tests
+
+    builders:
+        - test-builder:
+            var: "tox -e "
+            test_list:
+                - py27
+                - py35
+                - py36

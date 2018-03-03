@@ -1,0 +1,11 @@
+- job:
+    name: JJB_Unit_Tests
+
+    properties:
+      !include: properties_jjb.yaml.inc
+
+    builders:
+      - shell:
+          !include-raw:
+              - !include-raw: unit_tests_build_step1.sh
+              - !include-raw: unit_tests_build_step2.sh
